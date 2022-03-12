@@ -28,9 +28,6 @@ export default function Profile(props) {
         <React.Fragment>
             <h3>{username}'s Profile</h3>
             {
-                user.username === username && <EntryForm />
-            }
-            {
                 error && <Alert key="danger" variant="danger">No user found with username <b>{username}</b>.</Alert>
             }
         </React.Fragment>

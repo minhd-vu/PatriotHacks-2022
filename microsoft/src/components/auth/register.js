@@ -76,7 +76,7 @@ export default function Register() {
                         value={form.status}
                         onChange={e => setForm({ ...form, status: e.target.value })}
                     >
-                        <option selected value="safe">Safe</option>
+                        <option value="safe">Safe</option>
                         <option value="unsafe">Unsafe</option>
                     </select>
                 </div>

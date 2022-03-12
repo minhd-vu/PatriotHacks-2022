@@ -3,6 +3,7 @@ import axios from "axios";
 import Row from "react-bootstrap/Row";
 import Col from "react-bootstrap/Col";
 import { UserContext } from "../../contexts/user.context";
+import Alert from "react-bootstrap/Alert";
 
 import usePlacesAutocomplete, {
     getGeocode,
@@ -14,9 +15,14 @@ export default function EntryForm() {
     // const history = useHistory();
     const user = useContext(UserContext);
     const [location, setLocation] = useState("");
+    const [error, setError] = useState("");
 
     function onSubmit(e) {
         e.preventDefault();
+
+        if (!user.isAuth) {
+            return setError("Login to add a danger zone location.");
+        }
 
         axios.post("/api/entry/", {
             location: value,
@@ -94,6 +100,7 @@ export default function EntryForm() {
 
     return (
         <form className="form" onSubmit={onSubmit}>
+            {error && <Alert key="danger" variant="danger">{error}</Alert>}
             <Row>
                 <Col md={10}>
                     <div className="form-group">
@@ -111,7 +118,7 @@ export default function EntryForm() {
                 </Col>
                 <Col md={2}>
                     <div className="form-group">
-                        <input type="submit" value="Add Entry" className="btn btn-success" />
+                        <input type="submit" value="Add Danger Zone" className="btn btn-primary" />
                     </div>
                 </Col>
             </Row>

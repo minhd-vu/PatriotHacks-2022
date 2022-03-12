@@ -46,7 +46,7 @@ export default class App extends Component {
 					<Route path="/user/:username" render={props => <Profile {...props} />} />
 					<Route path="/groups" component={Groups} />
 					<Route path="/about" component={About} />
-					<Route path="/global" component={Leaderboard} />
+					<Route path="/danger" component={Leaderboard} />
 				</Container>
 				<br />
 				<br />

@@ -38,7 +38,7 @@ export default function Header() {
                 </React.Fragment>
             }
             <Nav.Link as={Link} to="/about">About</Nav.Link>
-            <Nav.Link as={Link} to="/global">Global</Nav.Link>
+            <Nav.Link as={Link} to="/danger">Danger Zones</Nav.Link>
           </Nav>
           <Nav className="ml-auto">
             <Form inline onSubmit={onSubmit}>
@@ -49,7 +49,7 @@ export default function Header() {
                 onChange={e => setSearch(e.target.value)}
                 className="mr-sm-2"
               />
-              <input type="submit" value="Search" className="btn btn-light" />
+              <input type="submit" value="Search" style={{ background: "#ffd700", "border-color": "#ffd700" }} className="btn btn-light" />
             </Form>
           </Nav>
         </Navbar.Collapse>
