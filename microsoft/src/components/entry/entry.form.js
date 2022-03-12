@@ -13,17 +13,13 @@ import useOnclickOutside from "react-cool-onclickoutside";
 export default function EntryForm() {
     // const history = useHistory();
     const user = useContext(UserContext);
-    const [hours, setHours] = useState("");
     const [location, setLocation] = useState("");
-    const [bags, setBags] = useState("");
 
     function onSubmit(e) {
         e.preventDefault();
 
         axios.post("/api/entry/", {
             location: value,
-            hours: hours,
-            bags: bags,
             latitude: location.lat,
             longitude: location.lng,
         }, { withCredentials: true })
@@ -32,8 +28,6 @@ export default function EntryForm() {
                     user.setReload(!user.reload);
 
                     setValue("");
-                    setHours("");
-                    setBags("");
                     setLocation("");
                 }
             })
@@ -101,7 +95,7 @@ export default function EntryForm() {
     return (
         <form className="form" onSubmit={onSubmit}>
             <Row>
-                <Col md={6}>
+                <Col md={10}>
                     <div className="form-group">
                         <div ref={ref}>
                             <input
@@ -113,34 +107,6 @@ export default function EntryForm() {
                             />
                             {status === "OK" && renderSuggestions()}
                         </div>
-                    </div>
-                </Col>
-                <Col md={2}>
-                    <div className="form-group">
-                        <input
-                            placeholder="Hours"
-                            type="number"
-                            step="0.1"
-                            min="0"
-                            required
-                            className="form-control"
-                            value={hours}
-                            onChange={e => setHours(e.target.value)}
-                        />
-                    </div>
-                </Col>
-                <Col md={2}>
-                    <div className="form-group">
-                        <input
-                            placeholder="Bags"
-                            type="number"
-                            step="0.1"
-                            min="0"
-                            required
-                            className="form-control"
-                            value={bags}
-                            onChange={e => setBags(e.target.value)}
-                        />
                     </div>
                 </Col>
                 <Col md={2}>
