@@ -4,6 +4,10 @@
   "private": true,
   "proxy": "http://localhost:5001",
   "dependencies": {
+    "@progress/kendo-licensing": "^1.2.2",
+    "@progress/kendo-react-buttons": "^5.1.0",
+    "@progress/kendo-react-conversational-ui": "^5.1.0",
+    "@progress/kendo-react-intl": "^5.1.0",
     "@testing-library/jest-dom": "^5.11.4",
     "@testing-library/react": "^11.1.0",
     "@testing-library/user-event": "^12.1.10",
