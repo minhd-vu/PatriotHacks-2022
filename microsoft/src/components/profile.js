@@ -7,7 +7,7 @@ import Web3 from "web3";
 export default function Profile(props) {
     const user = useContext(UserContext);
     const [username, setUsername] = useState([]);
-    const [error, setError] = useState(false);
+    const [error, setError] = useState("");
     const [eth, setEth] = useState("");
 
     useEffect(() => {
@@ -17,9 +17,9 @@ export default function Profile(props) {
         axios.get("/api/user/" + username, { withCredentials: true })
             .then(res => {
                 if (res.status === 200) {
-                    setError(false);
+                    setError("");
                 } else if (res.status === 204) {
-                    setError(true);
+                    setError(`No user found with username ${username}`);
                 }
             })
             .catch(err => console.log(err));
@@ -49,7 +49,7 @@ export default function Profile(props) {
         <React.Fragment>
             <h3>{username}'s Profile</h3>
             {
-                error && <Alert key="danger" variant="danger">No user found with username <b>{username}</b>.</Alert>
+                error && <Alert key="danger" variant="danger">{error}</Alert>
             }
             {
                 user.wallet &&
