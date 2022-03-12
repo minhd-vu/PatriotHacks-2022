@@ -7,21 +7,29 @@ export default function Register() {
     const history = useHistory();
     const user = useContext(UserContext);
     const [error, setError] = useState("");
-    const [username, setUsername] = useState("");
-    const [password, setPassword] = useState("");
-    const [confirmPassword, setConfirmPassword] = useState("");
+    const [form, setForm] = useState({ status: "safe" });
 
     function onSubmit(e) {
+        console.log(form);
         e.preventDefault();
 
-        if (password !== confirmPassword) {
+        if (!form.username.match("^[A-Za-z][A-Za-z0-9_]*")) {
+            return setError("Username invalid. Username must start with letter and all other characters must be alphabets, numbers, or underscore.")
+        }
+
+        if (form.password !== form.confirmPassword) {
             return setError("Passwords do not match.");
         }
 
-        axios.post("/api/register", { username: username.trim().toLowerCase(), password: password }, { withCredentials: true })
+        axios.post("/api/register", {
+            username: form.username.trim().toLowerCase(),
+            name: form.name,
+            password: form.password,
+            status: form.status,
+        }, { withCredentials: true })
             .then(res => {
                 if (res.status === 200) {
-                    user.setUsername(username);
+                    user.setUsername(form.username);
                     user.setAuth(true);
                     history.push("/");
                 }
@@ -47,9 +55,30 @@ export default function Register() {
                         type="text"
                         required
                         className="form-control"
-                        value={username}
-                        onChange={e => setUsername(e.target.value)}
+                        value={form.username}
+                        onChange={e => setForm({ ...form, username: e.target.value })}
                     />
+                </div>
+                <div className="form-group">
+                    <label>Name: </label>
+                    <input
+                        type="text"
+                        required
+                        className="form-control"
+                        value={form.name}
+                        onChange={e => setForm({ ...form, name: e.target.value })}
+                    />
+                </div>
+                <div className="form-group">
+                    <label>Status: </label>
+                    <select
+                        className="custom-select"
+                        value={form.status}
+                        onChange={e => setForm({ ...form, status: e.target.value })}
+                    >
+                        <option selected value="safe">Safe</option>
+                        <option value="unsafe">Unsafe</option>
+                    </select>
                 </div>
                 <div className="form-group">
                     <label>Password: </label>
@@ -57,8 +86,8 @@ export default function Register() {
                         type="password"
                         required
                         className="form-control"
-                        value={password}
-                        onChange={e => setPassword(e.target.value)}
+                        value={form.password}
+                        onChange={e => setForm({ ...form, password: e.target.value })}
                     />
                 </div>
                 <div className="form-group">
@@ -67,12 +96,12 @@ export default function Register() {
                         type="password"
                         required
                         className="form-control"
-                        value={confirmPassword}
-                        onChange={e => setConfirmPassword(e.target.value)}
+                        value={form.confirmPassword}
+                        onChange={e => setForm({ ...form, confirmPassword: e.target.value })}
                     />
                 </div>
                 <div className="form-group">
-                    <input type="submit" value="Register" className="btn btn-success" />
+                    <input type="submit" value="Register" className="btn btn-primary" />
                 </div>
             </form>
         </div>
