@@ -60,6 +60,8 @@ app.use("/api/group", require("./routes/group/group"));
 app.use("/api/entry", require("./routes/entry/entry"));
 app.use("/api/user", require("./routes/user"));
 app.use("/api/leaderboard", require("./routes/leaderboard"));
+app.use("/api/chat", require("./routes/chat/chat"));
+app.use("/api/message", require("./routes/chat/message"));
 
 app.get("*", (req, res) => {
     res.sendFile(path.join(__dirname, "../build/index.html"));
