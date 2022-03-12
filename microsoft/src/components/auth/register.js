@@ -72,6 +72,7 @@ export default function Register() {
                 <div className="form-group">
                     <label>Status: </label>
                     <select
+                        required
                         className="custom-select"
                         value={form.status}
                         onChange={e => setForm({ ...form, status: e.target.value })}
