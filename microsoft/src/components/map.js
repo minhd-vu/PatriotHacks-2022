@@ -2,6 +2,7 @@ import { useState, useRef, useCallback, useEffect } from "react";
 import ReactMapGL, { FullscreenControl, GeolocateControl, NavigationControl, Marker } from "react-map-gl";
 import Pin from "./pin";
 import axios from "axios";
+import EntryForm from "./entry/entry.form";	
 
 // eslint-disable-next-line import/no-webpack-loader-syntax
 // import mapboxgl from "mapbox-gl/dist/mapbox-gl-csp";

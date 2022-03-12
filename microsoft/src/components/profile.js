@@ -6,24 +6,25 @@ import Web3 from "web3";
 
 export default function Profile(props) {
     const user = useContext(UserContext);
-    const [username, setUsername] = useState([]);
     const [error, setError] = useState("");
     const [eth, setEth] = useState("");
+    const [profile, setProfile] = useState({});
 
     useEffect(() => {
         let username = props.match?.params?.username || user.username;
-        setUsername(username);
 
         axios.get("/api/user/" + username, { withCredentials: true })
             .then(res => {
                 if (res.status === 200) {
+                    console.log(res.data);
+                    setProfile(res.data);
                     setError("");
                 } else if (res.status === 204) {
                     setError(`No user found with username ${username}`);
                 }
             })
             .catch(err => console.log(err));
-    }, [username, props, user.username]);
+    }, [props, user.username]);
 
     async function onSubmit(e) {
         e.preventDefault();
@@ -47,12 +48,19 @@ export default function Profile(props) {
 
     return (
         <React.Fragment>
-            <h3>{username}'s Profile</h3>
+            <h3>{profile.username}'s Profile
+                {
+                    profile.status === "safe" ?
+                        <span class="badge badge-success mx-2">Safe</span> :
+                        <span class="badge badge-danger mx-2">Unsafe</span>
+                }
+            </h3>
             {
                 error && <Alert key="danger" variant="danger">{error}</Alert>
             }
+            <h5>ETH Wallet Address: {profile.wallet}</h5>
             {
-                user.wallet &&
+                profile.username !== user.username &&
                 <form className="form-inline" onSubmit={onSubmit}>
                     <div className="form-group">
                         <input
@@ -73,6 +81,9 @@ export default function Profile(props) {
                     </div>
                 </form>
             }
+            <br />
+            <h5>Biography</h5>
+            <p id="biography">{profile.biography}</p>
         </React.Fragment>
     );
 }

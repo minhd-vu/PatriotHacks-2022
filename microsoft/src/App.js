@@ -27,7 +27,7 @@ export default class App extends Component {
 				if (res.status === 200) {
 					this.context.setAuth(true);
 					this.context.setUsername(res.data.username);
-					this.context.setGroup(res.data.group);
+					this.context.setWallet(res.data.wallet);
 				}
 			}).catch(err => {
 				console.log(err);

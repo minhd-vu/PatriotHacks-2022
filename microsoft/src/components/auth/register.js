@@ -26,11 +26,14 @@ export default function Register() {
             name: form.name,
             password: form.password,
             status: form.status,
+            wallet: form.wallet,
+            biography: form.biography,
         }, { withCredentials: true })
             .then(res => {
                 if (res.status === 200) {
                     user.setUsername(form.username);
                     user.setAuth(true);
+                    user.setWallet(form.wallet);
                     history.push("/");
                 }
             })
@@ -80,6 +83,27 @@ export default function Register() {
                         <option value="safe">Safe</option>
                         <option value="unsafe">Unsafe</option>
                     </select>
+                </div>
+                <div className="form-group">
+                    <label>ETH Wallet Address: </label>
+                    <input
+                        type="text"
+                        required
+                        className="form-control"
+                        value={form.wallet}
+                        onChange={e => setForm({ ...form, wallet: e.target.value })}
+                    />
+                </div>
+                <div className="form-group">
+                    <label>Biography: </label>
+                    <textarea
+                        className="form-control"
+                        rows="3"
+                        required
+                        value={form.biography}
+                        onChange={e => setForm({ ...form, biography: e.target.value })}
+                    >
+                    </textarea>
                 </div>
                 <div className="form-group">
                     <label>Password: </label>
