@@ -17,29 +17,22 @@ export default function EntryForm() {
     const [location, setLocation] = useState("");
     const [error, setError] = useState("");
 
-    function onSubmit(e) {
+    async function onSubmit(e) {
         e.preventDefault();
 
         if (!user.isAuth) {
             return setError("Login to add a danger zone location.");
         }
 
-        axios.post("/api/entry/", {
+        const res = await axios.post("/api/entry/", {
             location: value,
             latitude: location.lat,
             longitude: location.lng,
-        }, { withCredentials: true })
-            .then(res => {
-                if (res.status === 200) {
-                    user.setReload(!user.reload);
+        }, { withCredentials: true });
 
-                    setValue("");
-                    setLocation("");
-                }
-            })
-            .catch(err => {
-                console.log(err);
-            });
+        if (res.status === 200) {
+            window.location.reload(false);
+        }
     }
 
     const {
