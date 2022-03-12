@@ -6,7 +6,9 @@ router.route("/").post(function (req, res) {
     User.register(new User({
         username: req.body.username,
         name: req.body.name,
-        status: req.body.status
+        status: req.body.status,
+        biography: req.body.biography,
+        wallet: req.body.wallet,
     }), req.body.password, function (err, user) {
         if (err) {
             console.log(err);

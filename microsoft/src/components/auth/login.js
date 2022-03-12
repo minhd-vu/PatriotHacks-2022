@@ -22,7 +22,7 @@ export default function Login() {
                 if (res.status === 200) {
                     user.setAuth(true);
                     user.setUsername(res.data.username);
-                    user.setGroup(res.data.group);
+                    user.setWallet(res.data.wallet);
                     history.push("/");
                 }
             })

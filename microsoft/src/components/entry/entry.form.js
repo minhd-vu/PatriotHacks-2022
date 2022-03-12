@@ -101,7 +101,7 @@ export default function EntryForm() {
     return (
         <form className="form" onSubmit={onSubmit}>
             {error && <Alert key="danger" variant="danger">{error}</Alert>}
-            <Row>
+            <Row className="container">
                 <Col md={10}>
                     <div className="form-group">
                         <div ref={ref}>

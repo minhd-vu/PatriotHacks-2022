@@ -6,8 +6,7 @@ export default function Leaderboard() {
     return (
         <React.Fragment>
             <h3>Danger Zones</h3>
-            <EntryForm />
-            <br />
+			<EntryForm />
             <Map />
             <br />
         </React.Fragment>
