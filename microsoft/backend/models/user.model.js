@@ -7,6 +7,7 @@ const UserSchema = new Schema({
     password: String,
     biography: String,
     name: String,
+    wallet: String,
     status: {
         type: String,
         enum: ['safe', 'unsafe'],

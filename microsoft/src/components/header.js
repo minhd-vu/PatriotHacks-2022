@@ -49,7 +49,15 @@ export default function Header() {
                 onChange={e => setSearch(e.target.value)}
                 className="mr-sm-2"
               />
-              <input type="submit" value="Search" style={{ background: "#ffd700", "border-color": "#ffd700" }} className="btn btn-light" />
+              <input
+                type="submit"
+                value="Search"
+                style={{
+                  background: "#ffd700",
+                  borderColor: "#ffd700"
+                }} 
+                className="btn btn-light"
+              />
             </Form>
           </Nav>
         </Navbar.Collapse>

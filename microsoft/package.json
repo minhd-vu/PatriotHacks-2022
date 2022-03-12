@@ -31,6 +31,7 @@
     "react-scripts": "4.0.3",
     "use-places-autocomplete": "^1.9.1",
     "web-vitals": "^1.0.1",
+    "web3": "^1.7.1",
     "worker-loader": "^3.0.8"
   },
   "scripts": {
