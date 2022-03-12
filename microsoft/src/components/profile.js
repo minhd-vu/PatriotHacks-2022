@@ -2,7 +2,6 @@ import React, { useEffect, useState, useContext } from "react";
 import axios from "axios";
 import Alert from "react-bootstrap/Alert";
 import { UserContext } from "../contexts/user.context";
-import EntryForm from "./entry/entry.form";
 
 export default function Profile(props) {
     const user = useContext(UserContext);
