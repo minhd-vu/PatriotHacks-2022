@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-vars */
 import { useState, useRef, useCallback, useEffect } from "react";
 import ReactMapGL, { FullscreenControl, GeolocateControl, NavigationControl, Marker, Layer, Source } from "react-map-gl";
 import Pin from "./pin";
@@ -111,7 +112,7 @@ export default function Map() {
 				ref={mapRef}
 				width="100%"
 				height="100%"
-				mapStyle="mapbox://styles/mapbox/light-v9"
+				mapStyle="mapbox://styles/mapbox/outdoors-v11"
 				onViewportChange={handleViewportChange}
 				mapboxApiAccessToken={process.env.REACT_APP_MAPBOX_ACCESS_TOKEN}
 			>
