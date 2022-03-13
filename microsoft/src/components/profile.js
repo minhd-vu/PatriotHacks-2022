@@ -5,6 +5,7 @@ import { UserContext } from "../contexts/user.context";
 import Web3 from "web3";
 import Row from "react-bootstrap/Row";
 import Col from "react-bootstrap/Col";
+import { useHistory } from "react-router-dom"
 
 export default function Profile(props) {
     const user = useContext(UserContext);
@@ -68,6 +69,23 @@ export default function Profile(props) {
         console.log(res);
     }
 
+    async function addContact(e) {
+        e.preventDefault()
+        try {
+            const res = await axios.get("/api/chat/find/" + user.username + "/" + profile.username)
+            console.log(res)
+            if (res.data === null) {
+                const res = await axios.post("/api/chat", {
+                    "senderId": user.username,
+                    "receiverId": profile.username
+                })
+            }
+            props.history.push('/chat')
+        } catch (err) {
+            console.log(err)
+        }
+    }
+
     return (
         profile.error ?
             <React.Fragment>
@@ -110,6 +128,18 @@ export default function Profile(props) {
                 }
                 <h5 className="my-2">Biography</h5>
                 <p id="biography">{profile.biography}</p>
+                {
+                    profile.username !== user.username &&
+                    <form className="form-inline" onSubmit={addContact}>
+                        <div className="form-group">
+                            <input
+                                type="submit"
+                                value="Add as contact and chat!"
+                                className="btn btn-primary mx-2"
+                            />
+                        </div>
+                    </form>
+                }
             </React.Fragment>
     );
 }

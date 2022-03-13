@@ -39,9 +39,10 @@ export default function Header() {
             }
             <Nav.Link as={Link} to="/about">About</Nav.Link>
             <Nav.Link as={Link} to="/danger">Danger Zones</Nav.Link>
+            <Nav.Link as={Link} to="/chat">Chat</Nav.Link>
           </Nav>
           <Nav className="ml-auto">
-            <Form inline onSubmit={onSubmit}>
+            <Form inline onSubmit={onSubmit}> 
               <FormControl
                 type="text"
                 placeholder="Search User"
