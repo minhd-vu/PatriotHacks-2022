@@ -8,6 +8,7 @@ import Row from "react-bootstrap/Row";
 import Col from "react-bootstrap/Col";
 import ListGroup from "react-bootstrap/ListGroup"
 import { io } from "socket.io-client"
+import Button from "react-bootstrap/Button";
 
 export default function Chat(props) {
     const messages = [
