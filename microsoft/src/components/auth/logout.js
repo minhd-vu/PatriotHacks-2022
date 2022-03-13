@@ -15,7 +15,7 @@ export default function Logout() {
                 if (res.status === 200) {
                     user.setAuth(false);
                     user.setUsername("");
-                    user.setGroup("");
+                    user.setWallet("");
                 }
             });
     }

@@ -1,5 +1,6 @@
 const router = require("express").Router();
 const User = require("../models/user.model");
+const isLoggedIn = require("../helpers/isLoggedIn");
 
 router.route("/:id").get(async function (req, res) {
     User.findOne({ username: req.params.id }, async function (err, user) {
@@ -12,6 +13,7 @@ router.route("/:id").get(async function (req, res) {
         await user.execPopulate("entries");
 
         res.status(200).send(user);
+
     });
 });
 
@@ -23,6 +25,16 @@ router.route("/search").post(async function (req, res) {
     }
 
     res.status(200).send(users);
+
+});
+
+router.route("/").post(isLoggedIn, async function (req, res) {
+    console.log(req.user);
+    req.user.wallet = req.body.wallet;
+    req.user.biography = req.body.biography;
+    req.user.status = req.body.status;
+    await req.user.save();
+    res.status(200).send(req.user);
 });
 
 module.exports = router;

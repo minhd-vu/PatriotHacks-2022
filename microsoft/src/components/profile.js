@@ -11,6 +11,30 @@ export default function Profile(props) {
     const [eth, setEth] = useState("");
     const [profile, setProfile] = useState({});
     const [query, setQuery] = useState();
+    const [form, setForm] = useState({
+        editing: false,
+        status: "safe",
+    });
+
+
+    async function onUpdateProfile(e) {
+        e.preventDefault();
+        const res = await axios.post("/api/user", {
+            wallet: form.wallet,
+            biography: form.biography,
+            status: form.status
+        }, { withCredentials: true });
+
+        if (res.status === 200) {
+            setProfile(res.data);
+            setForm({ ...form, editing: false });
+        }
+    }
+
+    function toggleForm(e) {
+        e.preventDefault();
+        setForm({ ...form, editing: true })
+    }
 
     useEffect(() => {
         let username = props.match?.params?.username || user.username;
@@ -21,12 +45,12 @@ export default function Profile(props) {
                     console.log(res.data);
                     setProfile(res.data);
                 } else if (res.status === 204) {
-                    setProfile({ ...profile, error: `No user found with username ${username}` });
+                    setProfile(p => ({ ...p, error: `No user found with username ${username}` }));
                     axios.post("/api/user/search", { query: username }, { withCredentials: true }).then(res => {
                         if (res.status === 200) {
                             console.log(res.data);
                             setQuery(res.data.map(e =>
-                                <li className="list-group-item">
+                                <li className="list-group-item" key={e.username}>
                                     <Row >
                                         <Col md={2}>Username: {e.username}</Col>
                                         <Col md={2}>Name: {e.name}</Col>
@@ -110,6 +134,54 @@ export default function Profile(props) {
                 }
                 <h5 className="my-2">Biography</h5>
                 <p id="biography">{profile.biography}</p>
-            </React.Fragment>
+                {
+                    form.editing ?
+                        <form onSubmit={onUpdateProfile}>
+                            <div className="form-group">
+                                <label>Status: </label>
+                                <select
+                                    required
+                                    className="custom-select"
+                                    value={form.status}
+                                    onChange={e => setForm({ ...form, status: e.target.value })}
+                                >
+                                    <option value="safe">Safe</option>
+                                    <option value="unsafe">Unsafe</option>
+                                </select>
+                            </div>
+                            <div className="form-group">
+                                <label>ETH Wallet Address: </label>
+                                <input
+                                    type="text"
+                                    required
+                                    className="form-control"
+                                    value={form.wallet}
+                                    onChange={e => setForm({ ...form, wallet: e.target.value })}
+                                />
+                            </div>
+                            <div className="form-group">
+                                <label>Biography: </label>
+                                <textarea
+                                    className="form-control"
+                                    rows="3"
+                                    required
+                                    value={form.biography}
+                                    onChange={e => setForm({ ...form, biography: e.target.value })}
+                                >
+                                </textarea>
+                            </div>
+                            <div className="form-group">
+                                <input type="submit" value="Update Profile" className="btn btn-primary" />
+                            </div>
+                        </form> :
+                        <input
+                            type="submit"
+                            value="Edit Profile"
+                            className="btn btn-primary"
+                            onClick={toggleForm}
+                            hidden={profile.username !== user.username}
+                        />
+                }
+            </React.Fragment >
     );
 }
