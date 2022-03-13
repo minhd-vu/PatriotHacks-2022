@@ -85,7 +85,7 @@ export default function Profile(props) {
         console.log(accounts);
         const res = await web3.eth.sendTransaction({
             from: accounts[0],
-            to: user.wallet,
+            to: profile.wallet,
             value: web3.utils.toWei(eth, "ether"),
         });
 
