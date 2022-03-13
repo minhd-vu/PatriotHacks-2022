@@ -1,8 +1,6 @@
 import React, { useEffect, useState, useContext, useRef } from "react";
 import axios from "axios";
 import { UserContext } from "../contexts/user.context";
-import 'react-chatbox-component/dist/style.css';
-import { ChatBox } from 'react-chatbox-component';
 import Container from "react-bootstrap/Container";
 import Row from "react-bootstrap/Row";
 import Col from "react-bootstrap/Col";
@@ -31,6 +29,7 @@ export default function Chat(props) {
   const [currentChat, setCurrentChat] = useState(null);
   const [messageList, setMessageList] = useState(messages);
   const [arrivalMessage, setArrivalMessage] = useState(null);
+  const [message, setMessage] = useState("");
   const socket = useRef();
 
   useEffect(() => {
@@ -108,7 +107,7 @@ export default function Chat(props) {
           "uid": res.data.sender,
           "avatar": "https://rainbowfilter.io/images/filters/ukraine/banner.png?v=2"
         }
-      }])
+      }]);
     } catch (err) {
       console.log(err)
     }
@@ -152,39 +151,70 @@ export default function Chat(props) {
     getMessages()
   }, [currentChat])
 
+  function onSubmit(e) {
+    e.preventDefault();
+    sendMessage(message);
+    setMessage("");
+  }
+
   return (
     <div>
       <Container>
         <Row>
-          <Col>
+          <Col md={2}>
             <ListGroup>
-              {chats.map((chat) => {
-                return (
-                  chat.members[0] !== user.username
-                    ? <ListGroup.Item action onClick={() => { setCurrentChat(chat) }}>{chat.members[0]}</ListGroup.Item>
-                    : <ListGroup.Item action onClick={() => { setCurrentChat(chat) }}>{chat.members[1]}</ListGroup.Item>
-                )
-              })}
+              {
+                chats.map((chat) => {
+                  return (
+                    chat.members[0] !== user.username
+                      ? <ListGroup.Item action onClick={() => { setCurrentChat(chat) }}>{chat.members[0]}</ListGroup.Item>
+                      : <ListGroup.Item action onClick={() => { setCurrentChat(chat) }}>{chat.members[1]}</ListGroup.Item>
+                  )
+                })
+              }
             </ListGroup>
           </Col>
           <Col>
-            <ChatBox
-              messages={messageList}
-              user={loggedInUser}
-              onSubmit={(input) => sendMessage(input)}
-            />
+            <ListGroup style={{
+              overflow: "scroll",
+              maxHeight: "300px",
+            }}>
+              {
+                messageList.map(e =>
+                  <ListGroup.Item
+                    key={e.id}
+                    className={e.sender.name === user.username ? "text-right" : "text-left"}>
+                    {e.text}
+                  </ListGroup.Item>
+                )
+              }
+            </ListGroup>
+
+            <form className="form-row mt-2" onSubmit={onSubmit}>
+              <Col>
+                <Button
+                  variant="primary"
+                  onClick={sendLocation}
+                >
+                  Send Location
+                </Button>
+              </Col>
+              <Col md={7}>
+                <input
+                  type="text"
+                  required
+                  className="form-control"
+                  value={message}
+                  onChange={e => setMessage(e.target.value)}
+                />
+              </Col>
+              <Col>
+                <input type="submit" value="Send Message" className="btn btn-primary" />
+              </Col>
+            </form>
           </Col>
         </Row>
-        <Row className="justify-content-end">
-          <Button
-            className="mt-5"
-            variant="primary"
-            onClick={sendLocation}
-          >
-            Send location!
-          </Button>
-        </Row>
       </Container>
-    </div>
+    </div >
   )
 }

@@ -149,15 +149,12 @@ export default function Profile(props) {
                                 />
                             </div>
                         </form>
-                        <form className="form-inline" onSubmit={addContact}>
-                            <div className="form-group">
-                                <input
-                                    type="submit"
-                                    value="Add as contact and chat!"
-                                    className="btn btn-primary mx-2"
-                                />
-                            </div>
-                        </form>
+                        <input
+                            type="submit"
+                            value="Send Message"
+                            className="btn btn-primary mt-2"
+                            onClick={addContact}
+                        />
                     </React.Fragment>
                 }
                 <h5 className="my-2">Biography</h5>
