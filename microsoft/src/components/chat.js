@@ -71,6 +71,14 @@ export default function Chat(props) {
       })
     }, [user])
 
+    const sendLocation = () => {
+      navigator.geolocation.getCurrentPosition(function(position) {
+        console.log("Latitude is :", position.coords.latitude);
+        console.log("Longitude is :", position.coords.longitude);
+        sendMessage("Here is my location! " + "https://www.google.com/maps?q=" + position.coords.latitude + "," + position.coords.longitude)
+      });
+    }
+
     const sendMessage = async (msg) => {
       if (user.username === "" || currentChat == null) {
         return
@@ -166,6 +174,15 @@ export default function Chat(props) {
                   onSubmit={(input) => sendMessage(input)}
                 />
               </Col>
+            </Row>
+            <Row className="justify-content-end">
+              <Button
+                className="mt-5"
+                variant="primary"
+                onClick={sendLocation}
+              >
+                Send location!
+              </Button>
             </Row>
           </Container>
         </div>
