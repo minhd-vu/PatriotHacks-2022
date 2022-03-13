@@ -4,7 +4,13 @@ import ReactMapGL, { FullscreenControl, GeolocateControl, NavigationControl, Mar
 import Pin from "./pin";
 import axios from "axios";
 
-const MAX_ZOOM_LEVEL = 9;
+import mapboxgl from 'mapbox-gl';
+
+// @ts-ignore
+// eslint-disable-next-line import/no-webpack-loader-syntax, import/no-unresolved
+mapboxgl.workerClass = require('worker-loader!mapbox-gl/dist/mapbox-gl-csp-worker').default;
+
+const MAX_ZOOM_LEVEL = 14;
 const heatmapLayer = {
 	id: 'heatmap',
 	maxzoom: MAX_ZOOM_LEVEL,
@@ -38,7 +44,7 @@ const heatmapLayer = {
 		// Adjust the heatmap radius by zoom level
 		'heatmap-radius': ['interpolate', ['linear'], ['zoom'], 0, 2, MAX_ZOOM_LEVEL, 20],
 		// Transition from heatmap to circle layer by zoom level
-		'heatmap-opacity': ['interpolate', ['linear'], ['zoom'], 7, 1, 9, 0]
+		'heatmap-opacity': ['interpolate', ['linear'], ['zoom'], 7, 1, MAX_ZOOM_LEVEL, 0]
 	}
 };
 

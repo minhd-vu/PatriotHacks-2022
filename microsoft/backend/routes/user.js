@@ -16,7 +16,7 @@ router.route("/:id").get(async function (req, res) {
 });
 
 router.route("/search").post(async function (req, res) {
-    const users = await User.find({ username: new RegExp(req.body.query, "i") });
+    const users = await User.find({ name: new RegExp(req.body.query, "i") });
 
     if (!users) {
         return res.status(204).send();
