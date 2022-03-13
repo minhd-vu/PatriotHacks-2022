@@ -3,12 +3,14 @@ import axios from "axios";
 import Alert from "react-bootstrap/Alert";
 import { UserContext } from "../contexts/user.context";
 import Web3 from "web3";
+import Row from "react-bootstrap/Row";
+import Col from "react-bootstrap/Col";
 
 export default function Profile(props) {
     const user = useContext(UserContext);
-    const [error, setError] = useState("");
     const [eth, setEth] = useState("");
     const [profile, setProfile] = useState({});
+    const [query, setQuery] = useState();
 
     useEffect(() => {
         let username = props.match?.params?.username || user.username;
@@ -18,9 +20,29 @@ export default function Profile(props) {
                 if (res.status === 200) {
                     console.log(res.data);
                     setProfile(res.data);
-                    setError("");
                 } else if (res.status === 204) {
-                    setError(`No user found with username ${username}`);
+                    setProfile({ ...profile, error: `No user found with username ${username}` });
+                    axios.post("/api/user/search", { query: username }, { withCredentials: true }).then(res => {
+                        if (res.status === 200) {
+                            console.log(res.data);
+                            setQuery(res.data.map(e =>
+                                <li className="list-group-item">
+                                    <Row >
+                                        <Col md={2}>Username: {e.username}</Col>
+                                        <Col md={2}>Name: {e.name}</Col>
+                                        <Col md={2}>{
+                                            e.status === "safe" ?
+                                                <span className="badge badge-success mx-2">Safe</span> :
+                                                <span className="badge badge-danger mx-2">Unsafe</span>
+                                        }</Col>
+                                    </Row>
+                                    <Row>
+                                        <Col>Biography: {e.biography}</Col>
+                                    </Row>
+                                </li>
+                            ));
+                        }
+                    })
                 }
             })
             .catch(err => console.log(err));
@@ -30,7 +52,7 @@ export default function Profile(props) {
         e.preventDefault();
 
         if (!window.ethereum) {
-            return setError("Install Metamask.");
+            return console.log("Install Metamask.");
         }
 
         await window.ethereum.request({ method: 'eth_requestAccounts' });
@@ -47,43 +69,47 @@ export default function Profile(props) {
     }
 
     return (
-        <React.Fragment>
-            <h3>{profile.username}'s Profile
+        profile.error ?
+            <React.Fragment>
+                <Alert key="danger" variant="danger">{profile.error}</Alert>
+                <h5>Similar Results:</h5>
+                <ul className="list-group">
+                    {query}
+                </ul>
+            </React.Fragment> :
+            <React.Fragment>
+                <h3>{profile.username}'s Profile
+                    {
+                        profile.status === "safe" ?
+                            <span className="badge badge-success mx-2">Safe</span> :
+                            <span className="badge badge-danger mx-2">Unsafe</span>
+                    }
+                </h3>
+                <h5>ETH Wallet Address: {profile.wallet}</h5>
                 {
-                    profile.status === "safe" ?
-                        <span class="badge badge-success mx-2">Safe</span> :
-                        <span class="badge badge-danger mx-2">Unsafe</span>
+                    profile.username !== user.username &&
+                    <form className="form-inline" onSubmit={onSubmit}>
+                        <div className="form-group">
+                            <input
+                                type="number"
+                                required
+                                className="form-control"
+                                value={eth}
+                                placeholder="ETH Amount"
+                                onChange={e => setEth(e.target.value)}
+                            />
+                        </div>
+                        <div className="form-group">
+                            <input
+                                type="submit"
+                                value="Send Donation"
+                                className="btn btn-primary mx-2"
+                            />
+                        </div>
+                    </form>
                 }
-            </h3>
-            {
-                error && <Alert key="danger" variant="danger">{error}</Alert>
-            }
-            <h5>ETH Wallet Address: {profile.wallet}</h5>
-            {
-                profile.username !== user.username &&
-                <form className="form-inline" onSubmit={onSubmit}>
-                    <div className="form-group">
-                        <input
-                            type="number"
-                            required
-                            className="form-control"
-                            value={eth}
-                            placeholder="ETH Amount"
-                            onChange={e => setEth(e.target.value)}
-                        />
-                    </div>
-                    <div className="form-group">
-                        <input
-                            type="submit"
-                            value="Send Donation"
-                            className="btn btn-primary mx-2"
-                        />
-                    </div>
-                </form>
-            }
-            <br />
-            <h5>Biography</h5>
-            <p id="biography">{profile.biography}</p>
-        </React.Fragment>
+                <h5 className="my-2">Biography</h5>
+                <p id="biography">{profile.biography}</p>
+            </React.Fragment>
     );
 }
