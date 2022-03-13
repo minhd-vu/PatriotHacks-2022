@@ -5,7 +5,6 @@ import { UserContext } from "../contexts/user.context";
 import Web3 from "web3";
 import Row from "react-bootstrap/Row";
 import Col from "react-bootstrap/Col";
-import { useHistory } from "react-router-dom"
 
 export default function Profile(props) {
     const user = useContext(UserContext);
@@ -99,7 +98,7 @@ export default function Profile(props) {
             const res = await axios.get("/api/chat/find/" + user.username + "/" + profile.username)
             console.log(res)
             if (res.data === null) {
-                const res = await axios.post("/api/chat", {
+                await axios.post("/api/chat", {
                     "senderId": user.username,
                     "receiverId": profile.username
                 })
