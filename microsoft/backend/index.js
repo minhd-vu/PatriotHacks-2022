@@ -13,11 +13,7 @@ require("dotenv").config();
 const app = express();
 const port = process.env.PORT || 5001;
 
-const io = require("socket.io")(4000, {
-    cors: {
-        origin: "http://localhost:3000"
-    },
-});
+// const server = require('http').createServer(app);
 
 let users = [];
 
@@ -87,8 +83,16 @@ app.get("*", (req, res) => {
     res.sendFile(path.join(__dirname, "../build/index.html"));
 });
 
-app.listen(port, () => {
+const server = app.listen(port, () => {
     console.log(`Server is running on http://localhost:${port}/`);
+});
+
+const io = require('socket.io')(server, {
+    cors: {
+        origin: "https://connect-ukr.herokuapp.com",
+        methods: ["GET", "POST"],
+        credentials: true,
+    }
 });
 
 io.on("connection", (socket) => {

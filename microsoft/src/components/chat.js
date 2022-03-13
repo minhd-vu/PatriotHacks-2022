@@ -37,7 +37,7 @@ export default function Chat(props) {
   } 
 
   useEffect(() => {
-    socket.current = io("ws://localhost:4000");
+    socket.current = io();
     console.log("CONNECTED" + socket.id)
     socket.current.emit("addUser", user.username)
     socket.current.on("getMessage", (data) => {
