@@ -16,6 +16,7 @@ import Groups from "./components/groups";
 import Leaderboard from "./components/leaderboard";
 import Home from "./components/home";
 import { UserContext } from "./contexts/user.context";
+import Chat from "./components/chat"
 
 export default class App extends Component {
 	static contextType = UserContext;
@@ -47,6 +48,7 @@ export default class App extends Component {
 					<Route path="/groups" component={Groups} />
 					<Route path="/about" component={About} />
 					<Route path="/danger" component={Leaderboard} />
+					<Route path="/chat" component={Chat} />
 				</Container>
 				<br />
 				<br />

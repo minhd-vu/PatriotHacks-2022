@@ -5,6 +5,7 @@ import { UserContext } from "../contexts/user.context";
 import Web3 from "web3";
 import Row from "react-bootstrap/Row";
 import Col from "react-bootstrap/Col";
+import { useHistory } from "react-router-dom"
 
 export default function Profile(props) {
     const user = useContext(UserContext);
@@ -92,6 +93,23 @@ export default function Profile(props) {
         console.log(res);
     }
 
+    async function addContact(e) {
+        e.preventDefault()
+        try {
+            const res = await axios.get("/api/chat/find/" + user.username + "/" + profile.username)
+            console.log(res)
+            if (res.data === null) {
+                const res = await axios.post("/api/chat", {
+                    "senderId": user.username,
+                    "receiverId": profile.username
+                })
+            }
+            props.history.push('/chat')
+        } catch (err) {
+            console.log(err)
+        }
+    }
+
     return (
         profile.error ?
             <React.Fragment>
@@ -112,25 +130,36 @@ export default function Profile(props) {
                 <h5>ETH Wallet Address: {profile.wallet}</h5>
                 {
                     profile.username !== user.username &&
-                    <form className="form-inline" onSubmit={onSubmit}>
-                        <div className="form-group">
-                            <input
-                                type="number"
-                                required
-                                className="form-control"
-                                value={eth}
-                                placeholder="ETH Amount"
-                                onChange={e => setEth(e.target.value)}
-                            />
-                        </div>
-                        <div className="form-group">
-                            <input
-                                type="submit"
-                                value="Send Donation"
-                                className="btn btn-primary mx-2"
-                            />
-                        </div>
-                    </form>
+                    <React.Fragment>
+                        <form className="form-inline" onSubmit={onSubmit}>
+                            <div className="form-group">
+                                <input
+                                    type="number"
+                                    required
+                                    className="form-control"
+                                    value={eth}
+                                    placeholder="ETH Amount"
+                                    onChange={e => setEth(e.target.value)}
+                                />
+                            </div>
+                            <div className="form-group">
+                                <input
+                                    type="submit"
+                                    value="Send Donation"
+                                    className="btn btn-primary mx-2"
+                                />
+                            </div>
+                        </form>
+                        <form className="form-inline" onSubmit={addContact}>
+                            <div className="form-group">
+                                <input
+                                    type="submit"
+                                    value="Add as contact and chat!"
+                                    className="btn btn-primary mx-2"
+                                />
+                            </div>
+                        </form>
+                    </React.Fragment>
                 }
                 <h5 className="my-2">Biography</h5>
                 <p id="biography">{profile.biography}</p>
@@ -182,6 +211,6 @@ export default function Profile(props) {
                             hidden={profile.username !== user.username}
                         />
                 }
-            </React.Fragment >
+            </React.Fragment>
     );
 }
