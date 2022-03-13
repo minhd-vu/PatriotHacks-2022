@@ -32,6 +32,10 @@ export default function Chat(props) {
   const [message, setMessage] = useState("");
   const socket = useRef();
 
+  if (user.username === "") {
+    props.history.push('/')
+  } 
+
   useEffect(() => {
     socket.current = io("ws://localhost:4000");
     console.log("CONNECTED" + socket.id)
