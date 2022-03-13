@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useContext } from "react";
+import React, { useEffect, useState, useContext, useRef } from "react";
 import axios from "axios";
 import { UserContext } from "../contexts/user.context";
 import 'react-chatbox-component/dist/style.css';
@@ -7,6 +7,7 @@ import Container from "react-bootstrap/Container";
 import Row from "react-bootstrap/Row";
 import Col from "react-bootstrap/Col";
 import ListGroup from "react-bootstrap/ListGroup"
+import { io } from "socket.io-client"
 
 export default function Chat(props) {
     const messages = [
@@ -22,14 +23,47 @@ export default function Chat(props) {
       ];
       
     const user = useContext(UserContext);
-    console.log(user)
     const loggedInUser = {
       "uid": user.username
     };
     const [chats, setChats] = useState([]);
     const [currentChat, setCurrentChat] = useState(null);
     const [messageList, setMessageList] = useState(messages);
+    const [arrivalMessage, setArrivalMessage] = useState(null);
+    const socket = useRef();
     //console.log(currentRecipient)
+
+    useEffect(() => {
+      socket.current = io("ws://localhost:4000");
+      socket.current.on("getMessage", (data) => {
+        setArrivalMessage({
+          sender: data.senderId,
+          text: data.text,
+          createdAt: Date.now()
+        })
+      })
+    }, []);
+
+    useEffect(() => {
+      console.log(arrivalMessage)
+      arrivalMessage && currentChat?.members.includes(arrivalMessage.sender) &&
+      setMessageList((prev) => [...prev, {
+        "text": arrivalMessage.text,
+        "id": "test",
+        "sender": {
+          "name": arrivalMessage.sender,
+          "uid": arrivalMessage.sender,
+          "avatar": "https://rainbowfilter.io/images/filters/ukraine/banner.png?v=2"
+        }
+      }])
+    }, [arrivalMessage, currentChat])
+
+    useEffect(() => {
+      socket.current.emit("addUser", user.username)
+      socket.current.on("getUsers", (users) => {
+        console.log(users)
+      })
+    }, [user])
 
     const sendMessage = async (msg) => {
       const newMsg = {
@@ -37,6 +71,15 @@ export default function Chat(props) {
         "text": msg,
         "chatId": currentChat
       };
+      console.log(currentChat)
+      const receiverId = currentChat.members.find((member) => member !== user.username)
+
+      socket.current.emit("sendMessage", {
+        senderId: user.username,
+        receiverId,
+        text: msg
+      })
+
       try {
         const res = await axios.post("/api/message", newMsg)
         console.log(res)
@@ -53,6 +96,12 @@ export default function Chat(props) {
         console.log(err)
       }
     }
+
+    /*useEffect(() => {
+      socket.on("welcome", (message) => {
+        console.log(message)
+      })
+    }, [socket])*/
 
     useEffect(() => {
       const getChats = async () => {
@@ -71,7 +120,7 @@ export default function Chat(props) {
     useEffect(() => {
       const getMessages = async () => {
         try {
-          const res = await axios.get("/api/message/" + currentChat)
+          const res = await axios.get("/api/message/" + currentChat._id)
           setMessageList(res.data.map((message) => {
             return (
               { 
@@ -103,8 +152,8 @@ export default function Chat(props) {
                   {chats.map((chat) => {
                     return (
                       chat.members[0] !== user.username 
-                      ? <ListGroup.Item action onClick={() => { setCurrentChat(chat._id) }}>{chat.members[0]}</ListGroup.Item>
-                      : <ListGroup.Item action onClick={() => { setCurrentChat(chat._id) }}>{chat.members[1]}</ListGroup.Item>
+                      ? <ListGroup.Item action onClick={() => { setCurrentChat(chat) }}>{chat.members[0]}</ListGroup.Item>
+                      : <ListGroup.Item action onClick={() => { setCurrentChat(chat) }}>{chat.members[1]}</ListGroup.Item>
                     )
                   })}
                 </ListGroup>
