@@ -4,6 +4,12 @@ import ReactMapGL, { FullscreenControl, GeolocateControl, NavigationControl, Mar
 import Pin from "./pin";
 import axios from "axios";
 
+import mapboxgl from 'mapbox-gl';
+
+// @ts-ignore
+// eslint-disable-next-line import/no-webpack-loader-syntax, import/no-unresolved
+mapboxgl.workerClass = require('worker-loader!mapbox-gl/dist/mapbox-gl-csp-worker').default;
+
 const MAX_ZOOM_LEVEL = 9;
 const heatmapLayer = {
 	id: 'heatmap',
