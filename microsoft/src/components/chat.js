@@ -15,9 +15,9 @@ export default function Chat(props) {
           "text": "Click on a contact to chat with them!",
           "id": "1",
           "sender": {
-            "name": "Ironman",
+            "name": "ConnectUKR",
             "uid": "user1",
-            "avatar": "https://data.cometchat.com/assets/images/avatars/ironman.png",
+            "avatar": "https://rainbowfilter.io/images/filters/ukraine/banner.png?v=2",
           },
         },
       ];
@@ -31,11 +31,13 @@ export default function Chat(props) {
     const [messageList, setMessageList] = useState(messages);
     const [arrivalMessage, setArrivalMessage] = useState(null);
     const socket = useRef();
-    //console.log(currentRecipient)
 
     useEffect(() => {
       socket.current = io("ws://localhost:4000");
+      console.log("CONNECTED" + socket.id)
+      socket.current.emit("addUser", user.username)
       socket.current.on("getMessage", (data) => {
+        console.log(data)
         setArrivalMessage({
           sender: data.senderId,
           text: data.text,
@@ -59,6 +61,9 @@ export default function Chat(props) {
     }, [arrivalMessage, currentChat])
 
     useEffect(() => {
+      if (user.username === "") {
+        return
+      }
       socket.current.emit("addUser", user.username)
       socket.current.on("getUsers", (users) => {
         console.log(users)
@@ -66,6 +71,9 @@ export default function Chat(props) {
     }, [user])
 
     const sendMessage = async (msg) => {
+      if (user.username === "" || currentChat == null) {
+        return
+      }
       const newMsg = {
         "sender": user.username,
         "text": msg,
@@ -73,7 +81,7 @@ export default function Chat(props) {
       };
       console.log(currentChat)
       const receiverId = currentChat.members.find((member) => member !== user.username)
-
+      console.log(receiverId)
       socket.current.emit("sendMessage", {
         senderId: user.username,
         receiverId,
@@ -97,12 +105,6 @@ export default function Chat(props) {
       }
     }
 
-    /*useEffect(() => {
-      socket.on("welcome", (message) => {
-        console.log(message)
-      })
-    }, [socket])*/
-
     useEffect(() => {
       const getChats = async () => {
         try {
@@ -112,7 +114,6 @@ export default function Chat(props) {
         } catch (err) {
           console.log(err);
         }
-        //const res = await axios.get("/conversations/" + user.username)
       }
       getChats()
     }, [user.username])
@@ -138,7 +139,6 @@ export default function Chat(props) {
         } catch (err) {
           console.log(err);
         }
-        //const res = await axios.get("/conversations/" + user.username)
       }
       getMessages()
     }, [currentChat])
@@ -163,9 +163,6 @@ export default function Chat(props) {
                   messages={messageList} 
                   user={loggedInUser}
                   onSubmit={(input) => sendMessage(input)}
-                  /*onChange={() => {
-                    console.log("test")
-                  }}*/    
                 />
               </Col>
             </Row>
